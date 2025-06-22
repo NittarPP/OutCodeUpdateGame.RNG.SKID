@@ -1,1 +1,50 @@
-print("hello")
+local Workspace = game:GetService("Workspace")
+
+-- Create a simple tree model
+local tree = Instance.new("Model")
+tree.Name = "Tree"
+
+-- Create trunk
+local trunk = Instance.new("Part")
+trunk.Name = "Trunk"
+trunk.Size = Vector3.new(2, 10, 2)
+trunk.Position = Vector3.new(0, 5, 0) -- half the height
+trunk.Anchored = true
+trunk.BrickColor = BrickColor.new("Reddish brown")
+trunk.Parent = tree
+
+-- Create leaves
+local leaves = Instance.new("Part")
+leaves.Name = "Leaves"
+leaves.Size = Vector3.new(8, 8, 8)
+leaves.Position = Vector3.new(0, 14, 0) -- trunk height + half of leaves height
+leaves.Anchored = true
+leaves.Shape = Enum.PartType.Ball
+leaves.BrickColor = BrickColor.new("Bright green")
+leaves.Parent = tree
+
+-- Place the tree at the center of the map
+local centerX = 0
+local centerZ = 0
+
+-- You can also automatically detect the center of a baseplate:
+--[[
+local baseplate = Workspace:FindFirstChild("Baseplate")
+if baseplate then
+	local size = baseplate.Size
+	local pos = baseplate.Position
+	centerX = pos.X
+	centerZ = pos.Z
+end
+--]]
+
+-- Move tree to center
+local offset = Vector3.new(centerX, 0, centerZ)
+for _, part in pairs(tree:GetChildren()) do
+	if part:IsA("BasePart") then
+		part.Position = part.Position + offset
+	end
+end
+
+-- Parent the tree to workspace
+tree.Parent = Workspace
