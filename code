@@ -2716,3 +2716,5 @@ local function centerModel(model)
 end
 
 centerModel(tree)
+
+game.Workspace.TREE:Destroy()
