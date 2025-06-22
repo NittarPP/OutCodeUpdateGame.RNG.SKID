@@ -1,6 +1,34 @@
 local partsWithId = {}
 local awaitRef = {}
 
+local function applyProperties(instance, properties)
+	for prop, val in pairs(properties) do
+		pcall(function()
+			instance[prop] = val
+		end)
+	end
+
+	if instance:IsA("BasePart") then
+		instance.Anchored = true
+	end
+end
+
+local function buildFromData(data, parent)
+	local newInstance = Instance.new(data.Type)
+	if data.Properties then
+		applyProperties(newInstance, data.Properties)
+	end
+	newInstance.Parent = parent
+
+	if data.Children then
+		for _, child in ipairs(data.Children) do
+			buildFromData(child, newInstance)
+		end
+	end
+
+	return newInstance
+end
+
 local root = {
 	ID = 0;
 	Type = "Model";
@@ -2658,36 +2686,33 @@ local root = {
 	};
 };
 
-local function Scan(item, parent)
-	local obj = Instance.new(item.Type)
-	if (item.ID) then
-		local awaiting = awaitRef[item.ID]
-		if (awaiting) then
-			awaiting[1][awaiting[2]] = obj
-			awaitRef[item.ID] = nil
-		else
-			partsWithId[item.ID] = obj
+local tree = buildFromData(root, workspace)
+
+local function centerModel(model)
+	local parts = {}
+
+	local function getParts(obj)
+		if obj:IsA("BasePart") then table.insert(parts, obj) end
+		for _, child in ipairs(obj:GetChildren()) do
+			getParts(child)
 		end
 	end
-	for p,v in pairs(item.Properties) do
-		if (type(v) == "string") then
-			local id = tonumber(v:match("^_R:(%w+)_$"))
-			if (id) then
-				if (partsWithId[id]) then
-					v = partsWithId[id]
-				else
-					awaitRef[id] = {obj, p}
-					v = nil
-				end
-			end
-		end
-		obj[p] = v
+
+	getParts(model)
+
+	if #parts == 0 then return end
+
+	local total = Vector3.new(0, 0, 0)
+	for _, part in ipairs(parts) do
+		total += part.Position
 	end
-	for _,c in pairs(item.Children) do
-		Scan(c, obj)
+
+	local center = total / #parts
+	local offset = Vector3.new(-center.X, 0, -center.Z)
+
+	for _, part in ipairs(parts) do
+		part.CFrame = part.CFrame + offset
 	end
-	obj.Parent = parent
-	return obj
 end
 
-return function() return Scan(root, nil) end
+centerModel(tree)
