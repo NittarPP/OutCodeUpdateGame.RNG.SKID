@@ -2702,7 +2702,7 @@ local function centerModel(model)
 
 	if #parts == 0 then return end
 
-	local total = Vector3.new(0, 0, 0)
+	local total = Vector3.new(0, 0, 15)
 	for _, part in ipairs(parts) do
 		total += part.Position
 	end
