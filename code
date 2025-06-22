@@ -1,50 +1,50 @@
 local Workspace = game:GetService("Workspace")
 
--- Create a simple tree model
+-- Create a tree model
 local tree = Instance.new("Model")
-tree.Name = "Tree"
+tree.Name = "DeadTree"
 
--- Create trunk
+-- Trunk
 local trunk = Instance.new("Part")
 trunk.Name = "Trunk"
-trunk.Size = Vector3.new(2, 10, 2)
-trunk.Position = Vector3.new(0, 5, 0) -- half the height
+trunk.Size = Vector3.new(2, 15, 2)
 trunk.Anchored = true
-trunk.BrickColor = BrickColor.new("Reddish brown")
+trunk.Position = Vector3.new(0, trunk.Size.Y / 2, 0)
+trunk.BrickColor = BrickColor.new("Dark brown")
+trunk.Material = Enum.Material.Wood
 trunk.Parent = tree
 
--- Create leaves
-local leaves = Instance.new("Part")
-leaves.Name = "Leaves"
-leaves.Size = Vector3.new(8, 8, 8)
-leaves.Position = Vector3.new(0, 14, 0) -- trunk height + half of leaves height
-leaves.Anchored = true
-leaves.Shape = Enum.PartType.Ball
-leaves.BrickColor = BrickColor.new("Bright green")
-leaves.Parent = tree
+-- Function to create a branch
+local function createBranch(offsetPos, rotation)
+	local branch = Instance.new("Part")
+	branch.Size = Vector3.new(1, 6, 1)
+	branch.Anchored = true
+	branch.BrickColor = BrickColor.new("Dark brown")
+	branch.Material = Enum.Material.Wood
+	branch.CFrame = CFrame.new(offsetPos) * CFrame.Angles(rotation.X, rotation.Y, rotation.Z)
+	branch.Parent = tree
+end
 
--- Place the tree at the center of the map
-local centerX = 0
-local centerZ = 0
+-- Create some jagged branches
+createBranch(Vector3.new(0, 12, 0), Vector3.new(math.rad(45), 0, math.rad(20)))
+createBranch(Vector3.new(0.5, 13.5, 0.5), Vector3.new(math.rad(50), math.rad(20), 0))
+createBranch(Vector3.new(-0.5, 11.5, -0.5), Vector3.new(math.rad(40), math.rad(-30), 0))
+createBranch(Vector3.new(0.8, 14, -0.8), Vector3.new(math.rad(60), math.rad(45), math.rad(10)))
 
--- You can also automatically detect the center of a baseplate:
---[[
+-- Optional: center on baseplate
+local centerX, centerZ = 0, 0
 local baseplate = Workspace:FindFirstChild("Baseplate")
 if baseplate then
-	local size = baseplate.Size
-	local pos = baseplate.Position
-	centerX = pos.X
-	centerZ = pos.Z
+	centerX = baseplate.Position.X
+	centerZ = baseplate.Position.Z
 end
---]]
 
--- Move tree to center
-local offset = Vector3.new(centerX, 0, centerZ)
+-- Offset tree parts to center of map
 for _, part in pairs(tree:GetChildren()) do
 	if part:IsA("BasePart") then
-		part.Position = part.Position + offset
+		part.Position += Vector3.new(centerX, 0, centerZ)
 	end
 end
 
--- Parent the tree to workspace
+-- Parent tree to workspace
 tree.Parent = Workspace
