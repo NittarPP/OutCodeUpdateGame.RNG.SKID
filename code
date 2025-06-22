@@ -2785,7 +2785,33 @@ task.spawn(function()
 end)
 
 -- Scary GUI messages from server (uses BillboardGui to avoid needing LocalScripts)
-local scaryWords = {"NO ESCAPE", "DON'T MAKE IT TAKE YOU", "DON'T BECOME IT"}
+local scaryWords = {
+    "THE TREE IS WATCHING",
+    "DON'T FOLLOW THE ROOTS",
+    "IT'S GROWING INSIDE",
+    "YOU CAN'T STOP THE SPREAD",
+    "THE FOREST WANTS YOU",
+    "RUN BEFORE IT GROWS",
+    "IT'S IN YOUR LUNGS",
+    "THE GROUND IS ALIVE",
+    "ROOTS BENEATH YOUR FEET",
+    "LEAVES WHISPER YOUR NAME",
+    "THE TREE REMEMBERS",
+    "YOU WALKED TOO CLOSE",
+    "EVERY BRANCH HUNTS",
+    "IT KNOWS YOU'RE HERE",
+    "THE FLOWERS ARE WATCHING",
+    "THE FOREST NEVER FORGIVES",
+    "SEEDS IN YOUR SKIN",
+    "YOU'RE BECOMING ONE OF THEM",
+    "THERE IS NO WAY BACK",
+    "THE TREE WANTS YOUR BODY",
+    "YOU WERE CHOSEN TO FEED IT",
+    "THE FOREST IS HUNGRY",
+    "BARK CREEPS UP YOUR ARMS",
+    "YOUR BONES WILL GROW ROOTS",
+    "DON’T LOOK AT THE TREE"
+}
 
 local function createScaryLabel(player)
 	local gui = Instance.new("BillboardGui")
