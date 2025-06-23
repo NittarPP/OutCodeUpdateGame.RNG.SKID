@@ -1,3 +1,5 @@
+--game.Workspace.TREE:Destroy()
+
 local partsWithId = {}
 local awaitRef = {}
 
@@ -2708,7 +2710,7 @@ local function centerModel(model)
 	end
 
 	local center = total / #parts
-	local offset = Vector3.new(-center.X, 10, -center.Z)
+	local offset = Vector3.new(-center.X, 20, -center.Z)
 
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
@@ -2749,4 +2751,4 @@ end
 
 
 centerModel(tree)
-SizeModel(tree, 50)
+SizeModel(tree, 100)
