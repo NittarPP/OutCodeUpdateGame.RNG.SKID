@@ -2688,13 +2688,11 @@ local root = {
 
 local tree = buildFromData(root, workspace)
 
-local function centerModel(model, x, y, z)
+local function centerModel(model)
 	local parts = {}
 
 	local function getParts(obj)
-		if obj:IsA("BasePart") then
-			table.insert(parts, obj)
-		end
+		if obj:IsA("BasePart") then table.insert(parts, obj) end
 		for _, child in ipairs(obj:GetChildren()) do
 			getParts(child)
 		end
@@ -2704,17 +2702,14 @@ local function centerModel(model, x, y, z)
 
 	if #parts == 0 then return end
 
-	-- Calculate current center of the model
-	local total = Vector3.zero
+	local total = Vector3.new(0, 100, 0)
 	for _, part in ipairs(parts) do
 		total += part.Position
 	end
 
-	local currentCenter = total / #parts
-	local newCenter = Vector3.new(x, y, z)
-	local offset = newCenter - currentCenter
+	local center = total / #parts
+	local offset = Vector3.new(-center.X, 0, -center.Z)
 
-	-- Move all parts by the offset to center them
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
 	end
@@ -2753,5 +2748,5 @@ local function SizeModel(model, targetSize)
 end
 
 
-centerModel(tree,0,-5,1500)
-SizeModel(tree, 5)
+centerModel(tree)
+SizeModel(tree, 199)
