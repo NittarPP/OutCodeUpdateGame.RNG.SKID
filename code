@@ -2688,11 +2688,13 @@ local root = {
 
 local tree = buildFromData(root, workspace)
 
-local function centerModel(model)
+local function centerModel(model, x, y, z)
 	local parts = {}
 
 	local function getParts(obj)
-		if obj:IsA("BasePart") then table.insert(parts, obj) end
+		if obj:IsA("BasePart") then
+			table.insert(parts, obj)
+		end
 		for _, child in ipairs(obj:GetChildren()) do
 			getParts(child)
 		end
@@ -2702,17 +2704,54 @@ local function centerModel(model)
 
 	if #parts == 0 then return end
 
-	local total = Vector3.new(0, -5, 1500)
+	-- Calculate current center of the model
+	local total = Vector3.zero
 	for _, part in ipairs(parts) do
 		total += part.Position
 	end
 
-	local center = total / #parts
-	local offset = Vector3.new(-center.X, 0, -center.Z)
+	local currentCenter = total / #parts
+	local newCenter = Vector3.new(x, y, z)
+	local offset = newCenter - currentCenter
 
+	-- Move all parts by the offset to center them
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
 	end
 end
 
-centerModel(tree)
+
+local function SizeModel(model, targetSize)
+	local parts = {}
+
+	-- Collect all BaseParts
+	local function getParts(obj)
+		if obj:IsA("BasePart") then
+			table.insert(parts, obj)
+		end
+		for _, child in ipairs(obj:GetChildren()) do
+			getParts(child)
+		end
+	end
+
+	getParts(model)
+
+	if #parts == 0 then return end
+
+	-- Get the bounding box size and center
+	local cframe, size = model:GetBoundingBox()
+
+	-- Calculate scale factor
+	local scale = targetSize / math.max(size.X, size.Y, size.Z) -- Uniform scale based on largest dimension
+
+	-- Scale all parts and reposition
+	for _, part in ipairs(parts) do
+		local offset = part.Position - cframe.Position
+		part.Size *= scale
+		part.Position = cframe.Position + offset * scale
+	end
+end
+
+
+centerModel(tree,0,-5,1500)
+SizeModel(tree, 5)
