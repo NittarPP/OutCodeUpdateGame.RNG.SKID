@@ -2710,7 +2710,7 @@ local function centerModel(model)
 	end
 
 	local center = total / #parts
-	local offset = Vector3.new(-center.X, 50, -center.Z)
+	local offset = Vector3.new(-center.X, 60, -center.Z)
 
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
@@ -2751,4 +2751,144 @@ end
 
 
 centerModel(tree)
-SizeModel(tree, 130)
+SizeModel(tree, 150)
+
+
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+
+-- Scary lighting setup
+Lighting.Brightness = 0.1
+Lighting.ClockTime = 0
+Lighting.OutdoorAmbient = Color3.fromRGB(80, 0, 0)
+Lighting.Ambient = Color3.fromRGB(150, 0, 0)
+Lighting.FogColor = Color3.fromRGB(100, 0, 0)
+Lighting.FogStart = 0
+Lighting.FogEnd = 100
+Lighting.EnvironmentDiffuseScale = 0.3
+Lighting.EnvironmentSpecularScale = 0.1
+
+local cc = Instance.new("ColorCorrectionEffect")
+cc.Name = "RedHorror"
+cc.TintColor = Color3.fromRGB(255, 0, 0)
+cc.Contrast = 0.2
+cc.Saturation = -0.1
+cc.Brightness = -0.1
+cc.Parent = Lighting
+
+local blur = Instance.new("BlurEffect")
+blur.Size = 6
+blur.Parent = Lighting
+
+-- Creepy sound loop
+local sound = Instance.new("Sound", workspace)
+sound.SoundId = "rbxassetid://1837635125" -- Replace with scarier audio if desired
+sound.Looped = true
+sound.Volume = 0.4
+sound:Play()
+
+-- Thunder flicker
+task.spawn(function()
+	while true do
+		wait(math.random(5, 12))
+		Lighting.Brightness = 2
+		wait(0.1)
+		Lighting.Brightness = 0.1
+	end
+end)
+
+-- Red glowing eyes
+task.spawn(function()
+	while true do
+		wait(math.random(5, 10))
+
+		local eye = Instance.new("Part")
+		eye.Anchored = true
+		eye.CanCollide = false
+		eye.Size = Vector3.new(0.3, 0.3, 0.3)
+		eye.Shape = Enum.PartType.Ball
+		eye.Material = Enum.Material.Neon
+		eye.Color = Color3.fromRGB(255, 0, 0)
+
+		local cam = workspace.CurrentCamera
+		local pos = cam.CFrame.Position + cam.CFrame.LookVector * math.random(20, 30)
+		pos = pos + Vector3.new(math.random(-10, 10), math.random(-5, 5), 0)
+		eye.Position = pos
+		eye.Parent = workspace
+		Debris:AddItem(eye, 3)
+	end
+end)
+
+-- Scary GUI messages from server (uses BillboardGui to avoid needing LocalScripts)
+local scaryWords = {
+    "THE TREE IS WATCHING",
+    "DON'T FOLLOW THE ROOTS",
+    "IT'S GROWING INSIDE",
+    "YOU CAN'T STOP THE SPREAD",
+    "THE FOREST WANTS YOU",
+    "RUN BEFORE IT GROWS",
+    "IT'S IN YOUR LUNGS",
+    "THE GROUND IS ALIVE",
+    "ROOTS BENEATH YOUR FEET",
+    "LEAVES WHISPER YOUR NAME",
+    "THE TREE REMEMBERS",
+    "YOU WALKED TOO CLOSE",
+    "EVERY BRANCH HUNTS",
+    "IT KNOWS YOU'RE HERE",
+    "THE FLOWERS ARE WATCHING",
+    "THE FOREST NEVER FORGIVES",
+    "SEEDS IN YOUR SKIN",
+    "YOU'RE BECOMING ONE OF THEM",
+    "THERE IS NO WAY BACK",
+    "THE TREE WANTS YOUR BODY",
+    "YOU WERE CHOSEN TO FEED IT",
+    "THE FOREST IS HUNGRY",
+    "BARK CREEPS UP YOUR ARMS",
+    "YOUR BONES WILL GROW ROOTS",
+    "DON’T LOOK AT THE TREE",
+    "CAT",
+    "YOU WILL REGRET"
+}
+
+local function createScaryLabel(player)
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "ScaryText"
+	gui.Adornee = player.Character:FindFirstChild("Head")
+	gui.Size = UDim2.new(0, 200, 0, 50)
+	gui.StudsOffset = Vector3.new(0, 3, 0)
+	gui.AlwaysOnTop = true
+
+	local text = Instance.new("TextLabel", gui)
+	text.Size = UDim2.new(1, 0, 1, 0)
+	text.Text = scaryWords[math.random(1, #scaryWords)]
+	text.TextScaled = true
+	text.TextColor3 = Color3.new(1, 0, 0)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.Arcade
+
+	gui.Parent = player.Character
+
+	Debris:AddItem(gui, 2)
+end
+
+-- Periodically add scary text to each player
+task.spawn(function()
+	while true do
+		wait(math.random(2, 5))
+		for _, player in pairs(Players:GetPlayers()) do
+			if player.Character and player.Character:FindFirstChild("Head") then
+				createScaryLabel(player)
+			end
+		end
+	end
+end)
+
+-- Auto-apply for new players
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(char)
+		wait(1)
+		createScaryLabel(player)
+	end)
+end)
