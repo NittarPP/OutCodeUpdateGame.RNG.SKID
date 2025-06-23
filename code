@@ -2710,7 +2710,7 @@ local function centerModel(model)
 	end
 
 	local center = total / #parts
-	local offset = Vector3.new(-center.X, 20, -center.Z)
+	local offset = Vector3.new(-center.X, 30, -center.Z)
 
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
