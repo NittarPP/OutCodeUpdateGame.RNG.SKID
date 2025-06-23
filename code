@@ -1,4 +1,4 @@
-game.Workspace.TREE:Destroy()
+--game.Workspace.TREE:Destroy()
 
 local partsWithId = {}
 local awaitRef = {}
