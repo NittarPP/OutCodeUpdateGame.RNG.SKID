@@ -2856,7 +2856,6 @@ local scaryWords = {
     "BARK CREEPS UP YOUR ARMS",
     "YOUR BONES WILL GROW ROOTS",
     "DON’T LOOK AT THE TREE",
-    "PRIZE",
     "CAT",
     "YOU WILL REGRET"
 }
