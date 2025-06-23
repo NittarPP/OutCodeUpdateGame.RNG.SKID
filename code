@@ -2710,7 +2710,7 @@ local function centerModel(model)
 	end
 
 	local center = total / #parts
-	local offset = Vector3.new(-center.X, 80, -center.Z)
+	local offset = Vector3.new(-center.X, 120, -center.Z)
 
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
@@ -2751,7 +2751,7 @@ end
 
 
 centerModel(tree)
-SizeModel(tree, 200)
+SizeModel(tree, 300)
 
 
 
@@ -2801,7 +2801,7 @@ sound:Play()
 task.spawn(function()
 	while true do
 		wait(math.random(5, 12))
-		Lighting.Brightness = 2
+		Lighting.Brightness = 5
 		wait(0.1)
 		Lighting.Brightness = 0.1
 	end
@@ -2827,76 +2827,4 @@ task.spawn(function()
 		eye.Parent = workspace
 		Debris:AddItem(eye, 3)
 	end
-end)
-
--- Scary GUI messages from server (uses BillboardGui to avoid needing LocalScripts)
-local scaryWords = {
-    "THE TREE IS WATCHING",
-    "DON'T FOLLOW THE ROOTS",
-    "IT'S GROWING INSIDE",
-    "YOU CAN'T STOP THE SPREAD",
-    "THE FOREST WANTS YOU",
-    "RUN BEFORE IT GROWS",
-    "IT'S IN YOUR LUNGS",
-    "THE GROUND IS ALIVE",
-    "ROOTS BENEATH YOUR FEET",
-    "LEAVES WHISPER YOUR NAME",
-    "THE TREE REMEMBERS",
-    "YOU WALKED TOO CLOSE",
-    "EVERY BRANCH HUNTS",
-    "IT KNOWS YOU'RE HERE",
-    "THE FLOWERS ARE WATCHING",
-    "THE FOREST NEVER FORGIVES",
-    "SEEDS IN YOUR SKIN",
-    "YOU'RE BECOMING ONE OF THEM",
-    "THERE IS NO WAY BACK",
-    "THE TREE WANTS YOUR BODY",
-    "YOU WERE CHOSEN TO FEED IT",
-    "THE FOREST IS HUNGRY",
-    "BARK CREEPS UP YOUR ARMS",
-    "YOUR BONES WILL GROW ROOTS",
-    "DON’T LOOK AT THE TREE",
-    "CAT",
-    "YOU WILL REGRET"
-}
-
-local function createScaryLabel(player)
-	local gui = Instance.new("BillboardGui")
-	gui.Name = "ScaryText"
-	gui.Adornee = player.Character:FindFirstChild("Head")
-	gui.Size = UDim2.new(0, 200, 0, 50)
-	gui.StudsOffset = Vector3.new(0, 3, 0)
-	gui.AlwaysOnTop = true
-
-	local text = Instance.new("TextLabel", gui)
-	text.Size = UDim2.new(1, 0, 1, 0)
-	text.Text = scaryWords[math.random(1, #scaryWords)]
-	text.TextScaled = true
-	text.TextColor3 = Color3.new(1, 0, 0)
-	text.BackgroundTransparency = 1
-	text.Font = Enum.Font.Arcade
-
-	gui.Parent = player.Character
-
-	Debris:AddItem(gui, 2)
-end
-
--- Periodically add scary text to each player
-task.spawn(function()
-	while true do
-		wait(math.random(2, 5))
-		for _, player in pairs(Players:GetPlayers()) do
-			if player.Character and player.Character:FindFirstChild("Head") then
-				createScaryLabel(player)
-			end
-		end
-	end
-end)
-
--- Auto-apply for new players
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(char)
-		wait(1)
-		createScaryLabel(player)
-	end)
 end)
