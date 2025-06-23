@@ -2710,7 +2710,7 @@ local function centerModel(model)
 	end
 
 	local center = total / #parts
-	local offset = Vector3.new(-center.X, 120, -center.Z)
+	local offset = Vector3.new(-center.X, 160, -center.Z)
 
 	for _, part in ipairs(parts) do
 		part.CFrame = part.CFrame + offset
@@ -2751,7 +2751,7 @@ end
 
 
 centerModel(tree)
-SizeModel(tree, 300)
+SizeModel(tree, 400)
 
 
 
@@ -2796,6 +2796,36 @@ sound.SoundId = "rbxassetid://1837635125" -- Replace with scarier audio if desir
 sound.Looped = true
 sound.Volume = 0.4
 sound:Play()
+
+task.spawn(function()
+	local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+
+-- Scary lighting setup
+Lighting.Brightness = 0.1
+Lighting.ClockTime = 0
+Lighting.OutdoorAmbient = Color3.fromRGB(80, 0, 0)
+Lighting.Ambient = Color3.fromRGB(150, 0, 0)
+Lighting.FogColor = Color3.fromRGB(100, 0, 0)
+Lighting.FogStart = 0
+Lighting.FogEnd = 100
+Lighting.EnvironmentDiffuseScale = 0.3
+Lighting.EnvironmentSpecularScale = 0.1
+
+local cc = Instance.new("ColorCorrectionEffect")
+cc.Name = "RedHorror"
+cc.TintColor = Color3.fromRGB(255, 0, 0)
+cc.Contrast = 0.2
+cc.Saturation = -0.1
+cc.Brightness = -0.1
+cc.Parent = Lighting
+
+local blur = Instance.new("BlurEffect")
+blur.Size = 6
+blur.Parent = Lighting
+end)
 
 -- Thunder flicker
 task.spawn(function()
